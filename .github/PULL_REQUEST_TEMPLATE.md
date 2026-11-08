@@ -18,7 +18,7 @@ Describe the significant AI-assisted changes, if applicable.
 
 **Checks performed and results:**
 
-Describe the commands, tests, and checks actually performed, including their outcomes.
+Summarize the verification performed and its results.
 
 **Not tested / Not verified:**
 
