@@ -132,3 +132,7 @@ This workflow aims to reduce the risk of incomplete or unverified changes affect
 ## 6. Future Improvements
 
 The workflow may evolve as Knowledge Garden grows, including automated testing, CI/CD, and additional review requirements.
+
+
+## Home
+- [Back to Home]({{ '/' | relative_url }})
