@@ -1,0 +1,9 @@
+# Jekyll generated files
+/docs/_site/
+/docs/.jekyll-cache/
+/docs/.jekyll-metadata
+/docs/.sass-cache/
+
+# Bundler local files
+/docs/.bundle/
+/docs/vendor/
