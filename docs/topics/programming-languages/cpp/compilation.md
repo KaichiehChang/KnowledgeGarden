@@ -540,3 +540,8 @@ g++ -std=c++20 -Wall -Wextra -Wpedantic -O2 main.cpp math.cpp -o app.exe
 - [GCC — Link Options](https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html) — Linking object files and libraries.
 
 - [GNU Binutils — LD Overview](https://sourceware.org/binutils/docs/ld/Overview.html) — Symbol resolution and relocation.
+
+
+---
+
+[Back to C++]({{ '/topics/programming-languages/cpp/' | relative_url }})
