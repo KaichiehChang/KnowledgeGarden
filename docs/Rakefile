@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+require "html-proofer"
+
+desc "Build the Jekyll website"
+task :build do
+  sh "bundle exec jekyll build --trace"
+end
+
+desc "Validate internal links in the generated website"
+task :check_links do
+  HTMLProofer.check_directory(
+    "./_site",
+    checks: ["Links"],
+    disable_external: true,
+    swap_urls: {
+      %r{\A/KnowledgeGarden/} => "/"
+    }
+  ).run
+end
+
+desc "Build the website and validate internal links"
+task verify: [:build, :check_links]
