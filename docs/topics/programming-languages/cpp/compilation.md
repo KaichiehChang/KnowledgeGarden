@@ -11,7 +11,7 @@ This note explains how C++ source files are transformed into an executable using
 
 The overall compilation and linking process for a single C++ source file is illustrated in [Figure 1](#fig-cpp-compilation-workflow). The diagram shows the logical stages; intermediate files are not necessarily stored during a normal build.
 
-<a id="fig-cpp-compilation-workflow"></a>
+<span id="fig-cpp-compilation-workflow"></span>
 
 ```mermaid
 
@@ -35,7 +35,7 @@ flowchart TD
 
 The individual stages are summarized in [Table 1](#tbl-compilation-stages).
 
-<a id="tbl-compilation-stages"></a>
+<span id="tbl-compilation-stages"></span>
 
 **Table 1. Compilation Stages**
 
@@ -142,7 +142,7 @@ int main() {
 
 The example project follows the general stages shown in Figure 1, but its two source files are compiled as separate translation units. This workflow is illustrated in [Figure 2](#fig-cpp-example-workflow).
 
-<a id="fig-cpp-example-workflow"></a>
+<span id="fig-cpp-example-workflow"></span>
 
 ```mermaid
 
@@ -401,7 +401,7 @@ g++ [options] <source-file> [additional-source-files...] [-o <output-file>]
 
 The compiler driver coordinates the relevant stages. Common command options are summarized in [Table 2](#tbl-command-explanations).
 
-<a id="tbl-command-explanations"></a>
+<span id="tbl-command-explanations"></span>
 
 **Table 2. Compiler Command Options**
 
