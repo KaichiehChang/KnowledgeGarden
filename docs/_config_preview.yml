@@ -1,0 +1,2 @@
+# Override the base URL for root-hosted preview deployments.
+baseurl: ""
