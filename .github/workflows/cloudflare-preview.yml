@@ -17,6 +17,7 @@ concurrency:
 jobs:
   preview:
     runs-on: ubuntu-latest
+    environment: cloudflare-preview
 
     steps:
       - name: Checkout repository
