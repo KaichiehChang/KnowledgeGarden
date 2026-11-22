@@ -1,0 +1,60 @@
+
+name: Cloudflare Preview Deployment
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Build Jekyll website
+        working-directory: docs
+        run: |
+          bundle install
+          bundle exec rake build_prev
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Deploy Cloudflare Preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          branch_slug="$(printf '%s' "$GITHUB_REF_NAME" |
+            tr '[:upper:]' '[:lower:]' |
+            sed 's/[^a-z0-9-]/-/g')"
+
+          preview_name="branch-${branch_slug}"
+
+          result="$(npx --yes wrangler@latest preview \
+            --name "$preview_name" --json)"
+
+          echo "$result"
+
+          preview_url="$(printf '%s' "$result" |
+            jq -er '.preview.urls[0]')"
+
+          echo "Preview: $preview_url" >> "$GITHUB_STEP_SUMMARY"
