@@ -1,0 +1,11 @@
+
+# Protect GitHub automation configuration.
+/.github/ @KaichiehChang
+
+# Protect Cloudflare deployment configuration.
+/wrangler.toml @KaichiehChang
+
+# Protect the Jekyll build pipeline.
+/docs/Rakefile @KaichiehChang
+/docs/Gemfile @KaichiehChang
+/docs/Gemfile.lock @KaichiehChang
