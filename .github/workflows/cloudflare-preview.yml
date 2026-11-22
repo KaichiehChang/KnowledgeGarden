@@ -31,7 +31,7 @@ jobs:
         working-directory: docs
         run: |
           bundle install
-          bundle exec rake build_prev
+          bundle exec rake build_preview
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
