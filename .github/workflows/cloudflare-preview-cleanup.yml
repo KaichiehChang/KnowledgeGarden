@@ -32,6 +32,7 @@ jobs:
       - name: Resolve Preview name
         id: resolve
         env:
+          # Deletion and PR-close events store the source branch in different payload fields.
           SOURCE_BRANCH: ${{ github.event_name == 'delete' && github.event.ref || github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
@@ -41,7 +42,8 @@ jobs:
             exit 1
           fi
 
-          # Keep the same naming convention as the deployment workflow.
+          # Keep this normalization and the branch- prefix in sync with
+          # cloudflare-preview.yml so cleanup targets the deployed Preview.
           branch_slug="$(printf '%s' "$SOURCE_BRANCH" |
             tr '[:upper:]' '[:lower:]' |
             sed 's/[^a-z0-9-]/-/g')"
@@ -61,6 +63,8 @@ jobs:
         run: |
           set -euo pipefail
 
+          # PRs from the same branch share a Preview; closing one must not remove
+          # the Preview while another PR from that branch is still open.
           open_count="$(gh pr list \
             --repo "$GH_REPO" \
             --state open \
@@ -134,6 +138,8 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Shared with cloudflare-preview.yml; update the marker and both
+          # workflows' comment lookup filters together.
           marker="<!-- knowledgegarden-preview -->"
 
           # Find the existing comment created by the deployment workflow.

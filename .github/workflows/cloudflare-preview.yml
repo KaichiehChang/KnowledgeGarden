@@ -48,6 +48,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          # Keep this normalization and the branch- prefix in sync with
+          # cloudflare-preview-cleanup.yml so cleanup can locate the deployed Preview.
           branch_slug="$(printf '%s' "$GITHUB_REF_NAME" |
             tr '[:upper:]' '[:lower:]' |
             sed 's/[^a-z0-9-]/-/g')"
@@ -102,6 +104,8 @@ jobs:
             exit 0
           fi
 
+          # Shared with cloudflare-preview-cleanup.yml; update the marker and both
+          # workflows' comment lookup filters together.
           marker="<!-- knowledgegarden-preview -->"
 
           # Keep a single identifiable comment per PR.

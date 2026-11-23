@@ -13,6 +13,8 @@ task :check_links do
     "./_site",
     checks: ["Links"],
     disable_external: true,
+    # Generated URLs include the GitHub Pages baseurl, but _site is the local root.
+    # Keep this prefix aligned with baseurl in _config.yml.
     swap_urls: {
       %r{\A/KnowledgeGarden/} => "/"
     }
@@ -26,5 +28,6 @@ task verify: [:build, :check_links]
 
 desc "Build the Jekyll website for preview deployment"
 task :build_preview do
+  # Apply the preview config last to override the baseurl for root-hosted previews.
   sh "bundle exec jekyll build --config _config.yml,_config_preview.yml --trace"
 end
