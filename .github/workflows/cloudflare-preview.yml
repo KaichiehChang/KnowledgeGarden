@@ -3,8 +3,12 @@ name: Cloudflare Preview Deployment
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - "docs/*"
+      - "feat/*"
+      - "fix/*"
+      - "test/*"
+      - "refactor/*"
   workflow_dispatch:
 
 permissions:
