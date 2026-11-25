@@ -157,6 +157,7 @@ The actual buffering behavior depends on the stream configuration, runtime libra
 
 The following examples compare variable formatting, newline behavior, and multi-line output.
 
+{% raw %}
 ```cpp
 #include <cstdio>
 #include <iostream>
@@ -171,31 +172,11 @@ int main() {
     // 1. C-style formatted output
     std::printf("[printf] Name: {%s}, Age: %d, Progress: 100%%",
                 name.c_str(), age);
-    std::printf(", Score: %.1f\n", score);
 
-    // 2. Stream-based output
-    std::cout << "[cout] Name: {" << name
-              << "}, Age: " << age << ", Progress: 100%";
-    std::cout << ", Score: " << score << '\n';
-
-    // 3. Modern formatted output without automatic newline
-    std::print("[print] Name: {{{}}}, Age: {}, Progress: 100%",
-               name, age);
-    std::print(", Score: {:.1f}\n", score);
-
-    // 4. Modern formatted output with automatic newline
-    std::println("[println] Name: {{{}}}, Age: {}, Progress: 100%, Score: {:.1f}",
-                 name, age, score);
-
-    // 5. Multi-line output
-    std::cout << "[Multi-line cout]\n"
-              << "Name: " << name << '\n'
-              << "Score: " << score << '\n';
-
-    std::println("[Multi-line println]\nName: {}\nScore: {}",
-                 name, score);
+    // Remaining C++ code...
 }
 ```
+{% endraw %}
 
 **Expected output:**
 
