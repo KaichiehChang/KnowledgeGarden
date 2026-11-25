@@ -10,5 +10,6 @@ Notes and experiments about programming languages.
 ## Languages
 
 - [C++]({{ '/topics/programming-languages/cpp/' | relative_url }})
+- [Rust]({{ '/topics/programming-languages/rust/' | relative_url }})
 
 [Back to Topics]({{ '/topics/' | relative_url }})
