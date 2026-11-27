@@ -69,6 +69,34 @@ int b{3.9};   // Error: narrowing conversion
 
 However, `=` initialization remains valid and useful. Braces are not universally better, because the initialization forms also differ in overload resolution and handling of `std::initializer_list`.
 
+**Limitations and considerations of `{}` initialization:**
+
+1. **Narrowing checks may reject implicit conversions that `=` permits.** An integral value can be converted to a floating-point type using braces only when the conversion is not classified as narrowing. For an integer-to-floating-point conversion, an exception exists for constant expressions whose values can be represented exactly in the destination type.
+
+   ```cpp
+   int runtimeValue{15};
+   constexpr int constantValue{15};
+
+   double a{15};             // OK: exact constant value
+   double b{0x0F};           // OK: 0x0F is decimal 15
+   double c{constantValue};  // OK: exact constant expression
+   double d{runtimeValue};   // Error: potentially narrowing
+   double e = runtimeValue;  // OK: implicit conversion allowed
+   ```
+
+   The compiler rejects `d` even though `runtimeValue` currently holds 15, because it is not a constant expression. In contrast, `=` accepts the conversion but does not guarantee that every possible integer value can be represented exactly as `double`.
+
+2. **Braces can select different constructors.** For class types, list initialization gives `std::initializer_list` constructors special preference when they are viable.
+
+   ```cpp
+   #include <vector>
+
+   std::vector<int> a(3, 7);  // Three elements, all 7
+   std::vector<int> b{3, 7};  // Two elements: 3 and 7
+   ```
+
+**Guideline:** Prefer `{}` when its narrowing checks and initialization behavior match your intent; do not mechanically replace every `=` or `()` with braces.
+
 ### Uninitialized Variables
 
 ```cpp
@@ -82,9 +110,49 @@ Uninitialized local variables of fundamental types generally have no usable init
 
 ## 3. Literals and Type Conversion
 
+A **literal** is a value written directly in source code. The literal has its own type, which may differ from the type of the variable receiving its value.
+
+### Integer Literals and Number Bases
+
+Integer literals can be written in different number bases:
+
+| Base | Prefix | Example | Decimal Value |
+|---|---|---|---|
+| Decimal | None | `15` | 15 |
+| Binary | `0b` or `0B` | `0b1111` | 15 |
+| Octal | Leading `0` | `017` | 15 |
+| Hexadecimal | `0x` or `0X` | `0x000F` | 15 |
+
+```cpp
+int decimal{15};
+int binary{0b0000'1111};
+int octal{017};
+int hexadecimal{0x000F};
+```
+
+All four variables contain the same numeric value. The notation changes how the value is written in source code, not how an `int` stores that value.
+
+- Binary integer literals (`0b`) were introduced in C++14.
+- Digit separators (`'`) were introduced in C++14; they do not affect the value or type.
+- A leading `0` indicates octal notation, so `017` is decimal 15, while `09` is not a valid octal integer literal.
+- Leading zeros do not increase the integer literal's storage size or precision.
+
+**The literal's base does not determine the destination variable's type.** For example:
+
+```cpp
+char letter{0x41};                  // Integer literal converted to char
+unsigned char bitPattern{0b1111'0000}; // Integer literal converted to unsigned char
+int value{0x0F};                    // Integer literal stored in int
+double floatingValue{0x0F};        // Exactly representable as double
+```
+
+On ASCII-compatible systems, `letter` contains the character `'A'`. The literals `0x41`, `0b1111'0000`, and `0x0F` are all of type `int` on conforming implementations, but their values can be converted to other types.
+
+Conversions must respect the destination type's representable range and precision. For example, `char small{0x41};` is valid, whereas `char large{0xFF};` is a narrowing-conversion error on implementations where plain `char` cannot represent 255. Using `=` instead of `{}` may permit the conversion, but it does not guarantee that the original value is preserved.
+
 ### Literal Types
 
-Literal suffixes specify the type of a literal.
+Literal suffixes influence the type of a literal; for integer literals, the base and the range of the value also affect which integer type is selected.
 
 ```cpp
 123       // int
@@ -101,6 +169,8 @@ Literal suffixes specify the type of a literal.
 true      // bool
 'a'       // char
 ```
+
+The examples above show the resulting types for these particular values. An unsuffixed integer literal is not necessarily `int` if its value does not fit in `int`.
 
 ### Implicit and Explicit Conversion
 
@@ -237,6 +307,50 @@ Comparison operators generally produce a `bool`.
 Logical operators operate on values converted to `bool`. `&&` and `||` use short-circuit evaluation.
 
 Bitwise operators operate on the bit representations of integral values.
+
+### Alternative Operator Representations
+
+C++ provides **alternative keyword representations** for several operators. These are built-in language keywords, available since C++98; they do not require a header or a special compiler option in standard C++.
+
+| Symbolic Operator | Alternative Keyword | Meaning |
+|---|---|---|
+| `&&` | `and` | Logical AND |
+| `\|\|` | `or` | Logical OR |
+| `!` | `not` | Logical NOT |
+| `&` | `bitand` | Bitwise AND |
+| `\|` | `bitor` | Bitwise OR |
+| `^` | `xor` | Bitwise XOR |
+| `~` | `compl` | Bitwise NOT |
+| `!=` | `not_eq` | Not equal |
+| `&=` | `and_eq` | Bitwise AND assignment |
+| `\|=` | `or_eq` | Bitwise OR assignment |
+| `^=` | `xor_eq` | Bitwise XOR assignment |
+
+```cpp
+bool ready{true};
+bool enabled{false};
+
+bool logicalAnd{ready && enabled};
+bool keywordAnd{ready and enabled};      // Equivalent to &&
+
+bool logicalOr{ready || enabled};
+bool keywordOr{ready or enabled};        // Equivalent to ||
+
+int first{0b1100};
+int second{0b1010};
+
+int bitwiseAnd{first & second};
+int keywordBitwiseAnd{first bitand second};  // Equivalent to &
+
+int bitwiseOr{first | second};
+int keywordBitwiseOr{first bitor second};    // Equivalent to |
+```
+
+**Equivalence:** Alternative representations have the same meaning, precedence, associativity, and evaluation rules as their symbolic counterparts. For example, `and` short-circuits exactly like `&&`. They introduce no inherent runtime overhead.
+
+**Do not confuse logical and bitwise operators:** `and` means `&&`, whereas `bitand` means `&`; likewise, `or` means `||`, whereas `bitor` means `|`.
+
+**Style:** Symbolic operators are more common in C++ codebases. Use a consistent style within a project, but recognize both forms when reading code.
 
 ### Precedence and Evaluation Order
 
