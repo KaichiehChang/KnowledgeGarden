@@ -221,6 +221,7 @@ For application projects, `Cargo.lock` should generally be committed to version 
 | `cargo clean` | Remove generated build artifacts |
 | `cargo fmt` | Format Rust source code |
 | `cargo clippy` | Run additional Rust lint checks |
+| `cargo doc --open` | Generate HTML documentation and open it in a browser |
 
 ### cargo build
 
@@ -257,6 +258,38 @@ cargo build --release
 Compiles the project using the release profile and places the resulting executable under `target/release/`.
 
 Release builds generally take longer to compile but may run faster due to additional optimizations. Use optimized builds for meaningful performance benchmarks.
+
+### cargo doc --open
+
+```bash
+cargo doc --open
+```
+
+Uses **rustdoc** to generate HTML API documentation for the package and its dependencies, stores the output in `target/doc/`, and opens the package documentation in a web browser. Running `cargo doc` without `--open` generates the documentation without opening it.
+
+Rust documentation comments become part of the generated documentation:
+
+- `///` documents the item that follows it, such as a function or struct.
+- `//!` documents the enclosing module or crate.
+
+For example:
+
+**File: `src/lib.rs`**
+
+```rust
+//! Basic arithmetic utilities.
+
+/// Returns the sum of two integers.
+pub fn add(left: i32, right: i32) -> i32 {
+    left + right
+}
+```
+
+To generate documentation only for the current package, without building dependency documentation:
+
+```bash
+cargo doc --no-deps --open
+```
 
 ## 6. Development (Debug) vs. Release Builds
 
@@ -535,6 +568,8 @@ For most Rust projects, Cargo should be the default choice. Direct use of `rustc
 - [The Rust Programming Language — Functions](https://doc.rust-lang.org/book/ch03-03-how-functions-work.html)
 - [The Rust Programming Language — Packages and Crates](https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html)
 - [The Cargo Book — Profiles](https://doc.rust-lang.org/cargo/reference/profiles.html)
+- [The Cargo Book — cargo doc](https://doc.rust-lang.org/cargo/commands/cargo-doc.html)
+- [The rustdoc Book — What is rustdoc?](https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html)
 - [The Cargo Book — Cargo.toml vs. Cargo.lock](https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html)
 - [The Cargo Book — Dependencies](https://doc.rust-lang.org/cargo/guide/dependencies.html)
 - [The rustc Book — Command-line Arguments](https://doc.rust-lang.org/rustc/command-line-arguments.html)
